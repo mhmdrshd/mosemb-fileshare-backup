@@ -58,7 +58,7 @@ Each milestone ≈ one Claude Code session, 1–3 commits.
   entry point, `readonly` constants. A green, shellcheck-clean baseline.
   `feat(core): add script skeleton with strict mode`
 
-- [ ] **2. Logging module** — `log()`, `err()`, timestamps, `-v` verbosity flag.
+- [x] **2. Logging module** — `log()`, `err()`, timestamps, `-v` verbosity flag.
   First piece of the reusable library (→ `lib/log.sh` eventually). Route info to
   stdout, errors to stderr.
   `feat(log): add timestamped logging helpers`
