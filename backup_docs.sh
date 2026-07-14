@@ -7,7 +7,7 @@ set -Eeuo pipefail
 IFS=$'\n\t'
 
 # --- Constants ---------------------------------------------------------------------
-readonly SCRIPT_NAME="${0##*/}"     # S{0##*/} strips the path, leaving the filename
+readonly SCRIPT_NAME="${0##*/}" # S{0##*/} strips the path, leaving the filename
 readonly SCRIPT_VERSION="0.1.0"
 
 # --- Logging -----------------------------------------------------------------------
@@ -17,7 +17,7 @@ VERBOSE="${VERBOSE:-0}"
 
 # log MESSAGE... - timestamped info line on stdout.
 log() {
-    local IFS=' '   # "$*" joins args with the first char of IFS; global IFS is \n\t
+    local IFS=' ' # "$*" joins args with the first char of IFS; global IFS is \n\t
     printf '[%(%F %T)T] [INFO] %s\n' -1 "$*"
 }
 
@@ -29,7 +29,7 @@ err() {
 
 # debug MESSAGE... - timestamped debug line on stderr, only when VERBOSE=1.
 debug() {
-    if (( VERBOSE )); then
+    if ((VERBOSE)); then
         local IFS=' '
         printf '[%(%F %T)T] [DEBUG] %s\n' -1 "$*" >&2
     fi
@@ -39,7 +39,7 @@ debug() {
 main() {
     log "$SCRIPT_NAME v$SCRIPT_VERSION starting"
     debug "verbose mode on (VERBOSE=$VERBOSE)"
-    err "demo error - nothing is actually wrong"   # temporary, proves stderr routing
+    err "demo error - nothing is actually wrong" # temporary, proves stderr routing
     log "nothing to do yet"
 }
 

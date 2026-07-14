@@ -14,22 +14,22 @@ IFS=$'\n\t'
 trap 'echo "rsync_guard: internal error; failing closed." >&2; exit 2' ERR
 
 main() {
-  local input cmd
-  input=$(cat)
-  cmd=$(jq -r '.tool_input.command // empty' <<<"$input")
+    local input cmd
+    input=$(cat)
+    cmd=$(jq -r '.tool_input.command // empty' <<<"$input")
 
-  # Not rsync in anywhere in the command: nothing to check
-  if [[ ! $cmd =~ (^|[[:space:]]|/)rsync([[:space:]]|$) ]]; then
-    exit 0
-  fi
-  
-  # Dry run present: long form, or -n standalone/bundled (-n, -avn)
-  if [[ $cmd =~ (^|[[:space:]])--dry-run([[:space:]]|$) ]] || [[ $cmd =~ (^|[[:space:]])-[a-zA-Z]*n ]]; then
-    exit 0
-  fi
+    # Not rsync in anywhere in the command: nothing to check
+    if [[ ! $cmd =~ (^|[[:space:]]|/)rsync([[:space:]]|$) ]]; then
+        exit 0
+    fi
 
-  echo "Blocked: rsync without --dry-run. Add -n or ask Muhammad Rasheed." >&2
-  exit 2
+    # Dry run present: long form, or -n standalone/bundled (-n, -avn)
+    if [[ $cmd =~ (^|[[:space:]])--dry-run([[:space:]]|$) ]] || [[ $cmd =~ (^|[[:space:]])-[a-zA-Z]*n ]]; then
+        exit 0
+    fi
+
+    echo "Blocked: rsync without --dry-run. Add -n or ask Muhammad Rasheed." >&2
+    exit 2
 }
 
 main "$@"

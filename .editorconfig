@@ -1,0 +1,12 @@
+# shfmt (and most editors) read this; without it shfmt assumes tab indentation
+# and `shfmt -d .` flags every file in the repo.
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+[*.{sh,example}]
+indent_style = space
+indent_size = 4
