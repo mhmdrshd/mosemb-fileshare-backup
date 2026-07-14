@@ -1,0 +1,25 @@
+# backup.conf.example - template for backup_docs.sh configuration.
+#
+# Copy to backup.conf (next to the script) and edit the values.
+# The real backup.conf is gitignored: it holds machine-specific paths
+# and share names that don't belong in the repo.
+#
+# This file is sourced by bash, so it must be valid bash syntax.
+# Keep it to plain variable assignments only - no commands.
+#
+# shellcheck shell=bash
+# shellcheck disable=SC2034  # variables are consumed by backup_docs.sh
+
+# SOURCE_DIRS - bash array of directories to back up (CIFS mount points).
+# An array, not a space-separated string: a path like "/mnt/docs/Q3 Reports"
+# would split into two bogus paths if we looped over a plain string.
+SOURCE_DIRS=(
+    "/mnt/smb/documents"
+    "/mnt/smb/scans"
+)
+
+# BACKUP_DEST - root directory on the external drive where copies land.
+BACKUP_DEST="/mnt/backup/docs"
+
+# LOG_FILE - where run logs are appended.
+LOG_FILE="${HOME}/backup_docs.log"
