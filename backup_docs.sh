@@ -50,6 +50,24 @@ debug() {
     fi
 }
 
+# --- Traps -------------------------------------------------------------------------
+# on_error EXIT_CODE LINE CMD - coroner's report for uninspected failures.
+# Registered on ERR at the entry point; set -E (milestone 1) is what makes it
+# fire inside functions. It only reports - set -e still performs the exit.
+# Deliberate failures (if ! check_x) share set -e's exemptions: no report.
+on_error() {
+    local exit_code="$1" line="$2" cmd="$3"
+    err "unexpected failure (exit $exit_code) at line $line in ${FUNCNAME[1]:-top level}: $cmd"
+}
+
+# on_exit - runs on every exit path: clean end, exit 1, set -e death.
+# $? is captured on the first line, before anything can overwrite it.
+# Future home for cleanup of resources acquired mid-run (temp files, mounts).
+on_exit() {
+    local exit_code=$?
+    debug "run ended (exit $exit_code)"
+}
+
 # --- Config ------------------------------------------------------------------------
 # load_config - source CONFIG_FILE and fail fast if required vars are missing.
 load_config() {
@@ -257,5 +275,11 @@ main() {
 # Run main only when executed; sourcing (tests, milestone 8) just gets the
 # function definitions. Same BASH_SOURCE test the lib uses, inverted.
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    # Traps registered here, not at top level: traps are process state, and a
+    # sourced script must not install them into the caller's shell.
+    # Single quotes are load-bearing: $?/$LINENO/$BASH_COMMAND must expand
+    # when the trap fires, not when it is registered.
+    trap 'on_error "$?" "$LINENO" "$BASH_COMMAND"' ERR
+    trap on_exit EXIT
     main "$@"
 fi
