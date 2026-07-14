@@ -77,7 +77,7 @@ Each milestone ≈ one Claude Code session, 1–3 commits.
   run if checks fail. (The planned integration step.)
   `feat(preflight): gate backup on SMB connectivity checks`
 
-- [ ] **6. Disk-space check + rsync core** — pre-flight free-space check,
+- [x] **6. Disk-space check + rsync core** — pre-flight free-space check,
   array-as-command pattern for rsync, filter rules for `.pdf/.doc/.docx`,
   `--dry-run` wired to `-n`.
   `feat(backup): add disk-space check and rsync copy`
