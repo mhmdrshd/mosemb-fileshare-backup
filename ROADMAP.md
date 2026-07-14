@@ -82,7 +82,7 @@ Each milestone ≈ one Claude Code session, 1–3 commits.
   `--dry-run` wired to `-n`.
   `feat(backup): add disk-space check and rsync copy`
 
-- [ ] **7. Traps** — ERR trap reporting failing line number; EXIT trap for
+- [x] **7. Traps** — ERR trap reporting failing line number; EXIT trap for
   cleanup (temp files, mounts). Relies on `-E` set back in milestone 1.
   `feat(core): add ERR and EXIT traps`
 
