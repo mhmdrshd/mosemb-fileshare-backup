@@ -72,7 +72,7 @@ Each milestone ≈ one Claude Code session, 1–3 commits.
   `-c <config>`, `-h` (help/usage). Validate inputs, clear error on bad flags.
   `feat(cli): add getopts argument parsing`
 
-- [ ] **5. Preflight gate** — port `smb-mount-check.sh` logic in as a sourced
+- [x] **5. Preflight gate** — port `smb-mount-check.sh` logic in as a sourced
   module/function: DNS → ping → TCP 445 → mount verification. Backup refuses to
   run if checks fail. (The planned integration step.)
   `feat(preflight): gate backup on SMB connectivity checks`
