@@ -18,6 +18,11 @@ SOURCE_DIRS=(
     "/mnt/smb/scans"
 )
 
+# SMB_SERVER - file server FQDN, used by the preflight connectivity checks.
+# FQDN, not IP: mapping by IP forces NTLM instead of Kerberos and silently
+# breaks the day the server's address changes.
+SMB_SERVER="fileserver.example.local"
+
 # BACKUP_DEST - root directory on the external drive where copies land.
 BACKUP_DEST="/mnt/backup/docs"
 

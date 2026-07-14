@@ -59,6 +59,7 @@ load_config() {
     source "$CONFIG_FILE"
 
     # :? fails on unset AND empty - an empty BACKUP_DEST would pass a bare -v test
+    : "${SMB_SERVER:?backup.conf must set SMB_SERVER}"
     : "${BACKUP_DEST:?backup.conf must set BACKUP_DEST}"
     : "${LOG_FILE:?backup.conf must set LOG_FILE}"
 
@@ -70,6 +71,13 @@ load_config() {
 
     debug "config OK: ${#SOURCE_DIRS[@]} source dir(s), dest=$BACKUP_DEST"
 }
+
+# --- Libraries ---------------------------------------------------------------------
+# Sourcing only defines the check_* functions; nothing runs until main() calls
+# run_preflight. SCRIPT_DIR (not a relative path) so it works from any cwd.
+# shellcheck source=lib/preflight.sh
+# shellcheck disable=SC1091  # following the source needs -x; lint stays flag-free
+source "${SCRIPT_DIR}/lib/preflight.sh"
 
 # --- CLI ---------------------------------------------------------------------------
 # usage - print help. Goes to stdout: -h is a request, not an error, so
@@ -140,6 +148,11 @@ main() {
     fi
     load_config
     log "config loaded from $CONFIG_FILE"
+
+    if ! run_preflight; then
+        err "preflight failed - backup aborted"
+        exit 1
+    fi
 }
 
 # --- Entry point -------------------------------------------------------------------
