@@ -10,3 +10,4 @@ charset = utf-8
 [*.{sh,example}]
 indent_style = space
 indent_size = 4
+switch_case_indent = true

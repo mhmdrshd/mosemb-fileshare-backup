@@ -15,12 +15,15 @@ readonly SCRIPT_VERSION="0.1.0"
 # separate lines: readonly VAR="$(cmd)" would mask a failure of cmd (SC2155).
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 readonly SCRIPT_DIR
-readonly CONFIG_FILE="${SCRIPT_DIR}/backup.conf" # no command subst, inline is safe
+# Default config path. Not readonly here: -c must be able to override it, so
+# main() freezes it with readonly only after parse_args has run.
+CONFIG_FILE="${SCRIPT_DIR}/backup.conf"
+
+# --- Defaults (flags flip these in parse_args) ---------------------------------------
+VERBOSE=0 # -v: show debug messages
+DRY_RUN=0 # -n: report what would be copied, touch nothing (consumed in milestone 6)
 
 # --- Logging -----------------------------------------------------------------------
-# 0 = quiet, 1 = show debug messages. Env-var hook until getopts lands (milestone 4):
-#   VERBOSE=1 ./backup_docs.sh
-VERBOSE="${VERBOSE:-0}"
 
 # log MESSAGE... - timestamped info line on stdout.
 log() {
@@ -68,9 +71,73 @@ load_config() {
     debug "config OK: ${#SOURCE_DIRS[@]} source dir(s), dest=$BACKUP_DEST"
 }
 
+# --- CLI ---------------------------------------------------------------------------
+# usage - print help. Goes to stdout: -h is a request, not an error, so
+# `backup_docs.sh -h | less` must work. Error paths redirect it to stderr.
+usage() {
+    cat <<EOF
+Usage: $SCRIPT_NAME [-n] [-v] [-c CONFIG] [-h]
+
+Back up documents from SMB shares to an external drive.
+
+Options:
+  -n           dry-run: show what would be copied, change nothing
+  -v           verbose: show debug messages
+  -c CONFIG    config file to use (default: $CONFIG_FILE)
+  -h           show this help and exit
+EOF
+}
+
+# parse_args - set DRY_RUN, VERBOSE, CONFIG_FILE from the command line.
+parse_args() {
+    # OPTIND is global and survives between getopts runs; without local, a
+    # second call (bats tests, milestone 8) would resume mid-argument-list.
+    local opt OPTIND
+
+    # Leading ':' = silent mode: bash hands errors to us as ':' and '?' cases
+    # instead of printing its own untimestamped message. 'c:' = -c takes a value.
+    while getopts ":nvc:h" opt; do
+        case "$opt" in
+            n) DRY_RUN=1 ;;
+            v) VERBOSE=1 ;;
+            c) CONFIG_FILE="$OPTARG" ;;
+            h)
+                usage
+                exit 0
+                ;;
+            :) # a flag that needs a value didn't get one; OPTARG = the flag char
+                err "option -$OPTARG requires an argument"
+                usage >&2
+                exit 2
+                ;;
+            \?) # unknown flag; OPTARG = the offending char
+                err "unknown option: -$OPTARG"
+                usage >&2
+                exit 2
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    # Leftover positional args are a user mistake; ignoring them silently would
+    # let './backup_docs.sh -n /mnt/typo' pretend that path meant something.
+    if (($# > 0)); then
+        err "unexpected argument: $1 (this script takes no positional arguments)"
+        usage >&2
+        exit 2
+    fi
+}
+
 # --- Functions ---------------------------------------------------------------------
 main() {
+    parse_args "$@"
+    readonly CONFIG_FILE # -c had its chance; frozen from here on
+
     log "$SCRIPT_NAME v$SCRIPT_VERSION starting"
+    debug "flags: DRY_RUN=$DRY_RUN VERBOSE=$VERBOSE CONFIG_FILE=$CONFIG_FILE"
+    if ((DRY_RUN)); then
+        log "dry-run mode: no files will be copied"
+    fi
     load_config
     log "config loaded from $CONFIG_FILE"
 }
