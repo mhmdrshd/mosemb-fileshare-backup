@@ -68,7 +68,7 @@ Each milestone ≈ one Claude Code session, 1–3 commits.
   `${VAR:?message}`). Real config stays gitignored.
   `docs(config): add example config` · `feat(config): source and validate config`
 
-- [ ] **4. Argument parsing** — `getopts` for `-n` (dry-run), `-v` (verbose),
+- [x] **4. Argument parsing** — `getopts` for `-n` (dry-run), `-v` (verbose),
   `-c <config>`, `-h` (help/usage). Validate inputs, clear error on bad flags.
   `feat(cli): add getopts argument parsing`
 
