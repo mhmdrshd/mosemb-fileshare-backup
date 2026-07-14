@@ -23,8 +23,19 @@ SOURCE_DIRS=(
 # breaks the day the server's address changes.
 SMB_SERVER="fileserver.example.local"
 
-# BACKUP_DEST - root directory on the external drive where copies land.
+# BACKUP_MOUNT - mountpoint of the external backup drive. Verified with
+# mountpoint(1) before every run: if the drive is absent, this is a plain
+# directory and a backup would fill the root filesystem instead.
+BACKUP_MOUNT="/mnt/backup"
+
+# BACKUP_DEST - directory on the external drive where copies land.
+# Must be BACKUP_MOUNT or a path under it (validated at startup).
 BACKUP_DEST="/mnt/backup/docs"
+
+# MIN_FREE_GB - refuse to run with less than this many GB free at
+# BACKUP_DEST. A floor, not a prediction: incremental runs need far less
+# than a full copy. 0 disables the check.
+MIN_FREE_GB=5
 
 # LOG_FILE - where run logs are appended.
 LOG_FILE="${HOME}/backup_docs.log"
