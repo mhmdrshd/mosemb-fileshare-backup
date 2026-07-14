@@ -63,7 +63,7 @@ Each milestone ≈ one Claude Code session, 1–3 commits.
   stdout, errors to stderr.
   `feat(log): add timestamped logging helpers`
 
-- [ ] **3. Config loading** — commit `backup.conf.example`; source the real
+- [x] **3. Config loading** — commit `backup.conf.example`; source the real
   `backup.conf` and validate (fail fast if required vars unset, e.g.
   `${VAR:?message}`). Real config stays gitignored.
   `docs(config): add example config` · `feat(config): source and validate config`
