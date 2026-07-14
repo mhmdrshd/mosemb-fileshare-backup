@@ -153,7 +153,25 @@ main() {
         err "preflight failed - backup aborted"
         exit 1
     fi
+
+    if ! check_destination; then
+        err "destination check failed - backup aborted"
+        exit 1
+    fi
+
+    if ! run_backup; then
+        err "backup finished with errors"
+        exit 1
+    fi
+    log "backup complete"
+    if ((DRY_RUN)); then
+        log "dry-run: nothing was actually copied"
+    fi
 }
 
 # --- Entry point -------------------------------------------------------------------
-main "$@"
+# Run main only when executed; sourcing (tests, milestone 8) just gets the
+# function definitions. Same BASH_SOURCE test the lib uses, inverted.
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main "$@"
+fi
