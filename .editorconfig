@@ -7,7 +7,7 @@ end_of_line = lf
 insert_final_newline = true
 charset = utf-8
 
-[*.{sh,example}]
+[*.{sh,example,bats}]
 indent_style = space
 indent_size = 4
 switch_case_indent = true
