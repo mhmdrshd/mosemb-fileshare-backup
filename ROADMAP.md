@@ -86,7 +86,7 @@ Each milestone ≈ one Claude Code session, 1–3 commits.
   cleanup (temp files, mounts). Relies on `-E` set back in milestone 1.
   `feat(core): add ERR and EXIT traps`
 
-- [ ] **8. Tests** — Bats-core basics. Test pure functions first (config
+- [x] **8. Tests** — Bats-core basics. Test pure functions first (config
   validation, arg parsing) by sourcing the script.
   `test: add bats tests for config and arg parsing`
 
